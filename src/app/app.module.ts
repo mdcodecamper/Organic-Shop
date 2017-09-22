@@ -1,3 +1,8 @@
+import { AdminAuthGuardService } from './services/admin-auth-guard.service';
+import { UserService } from './services/user.service';
+import { AuthGuardService } from './services/auth-guard.service';
+import { AFService } from './services/af.service';
+
 import { RouterModule } from '@angular/router';
 import { environment } from './../environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,6 +25,7 @@ import { ProductsComponent } from './components/products/products.component';
 import { ShoppingCartComponent } from './components/shopping-cart/shopping-cart.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
+import { RegistrationComponent } from './components/registration/registration.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +40,8 @@ import { LogoutComponent } from './components/logout/logout.component';
     ProductsComponent,
     ShoppingCartComponent,
     LoginComponent,
-    LogoutComponent
+    LogoutComponent,
+    RegistrationComponent
   ],
   imports: [
     BrowserModule,
@@ -45,17 +52,18 @@ import { LogoutComponent } from './components/logout/logout.component';
     RouterModule.forRoot([
       { path: ' ', component:HomeComponent },
       { path: 'products', component:ProductsComponent },
-      { path: 'my/orders', component:MyOrdersComponent },
-      { path: 'shopping-cart', component:ShoppingCartComponent },
-      { path: 'check-out', component:CheckoutComponent },
-      { path: 'order-success', component:OrderSuccessComponent },
+      { path:'register', component:RegistrationComponent},
       { path: 'login', component:LoginComponent },
-       { path: 'logout', component:LogoutComponent },
-      { path: 'admin/admin-products', component:AdminProductsComponent },
-      { path: 'admin/orders', component:AdminOrdersComponent }
+      { path: 'logout', component:LogoutComponent },
+      { path: 'shopping-cart', component:ShoppingCartComponent },
+      { path: 'my/orders', component:MyOrdersComponent, canActivate: [AuthGuardService] },
+      { path: 'check-out', component:CheckoutComponent, canActivate: [AuthGuardService] },
+      { path: 'order-success', component:OrderSuccessComponent, canActivate: [AuthGuardService] },
+      { path: 'admin/admin-products', component:AdminProductsComponent, canActivate: [AuthGuardService, AdminAuthGuardService] },
+      { path: 'admin/orders', component:AdminOrdersComponent, canActivate: [AuthGuardService,AdminAuthGuardService ] }
     ])
   ],
-  providers: [],
+  providers: [AFService, AuthGuardService, UserService, AdminAuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
