@@ -1,3 +1,4 @@
+import { ShoppingCartService } from './services/shopping-cart.service';
 import { ProductService } from './services/product.service';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from './services/category.service';
@@ -12,6 +13,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CustomFormsModule } from 'ng2-validation';
+import { DataTableModule } from 'angular-4-data-table';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
@@ -31,6 +33,8 @@ import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { ProductFormComponent } from './components/admin/product-form/product-form.component';
+import { ProductFilterComponent } from './components/products/product-filter/product-filter.component';
+import { ProductCardComponent } from './components/product-card/product-card.component';
 
 @NgModule({
   declarations: [
@@ -47,18 +51,21 @@ import { ProductFormComponent } from './components/admin/product-form/product-fo
     LoginComponent,
     LogoutComponent,
     RegistrationComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    ProductFilterComponent,
+    ProductCardComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     CustomFormsModule,
+    DataTableModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     NgbModule.forRoot(),
     RouterModule.forRoot([
-      { path: ' ', component:HomeComponent },
+      { path: '', component:ProductsComponent },
       { path: 'products', component:ProductsComponent },
       { path:'register', component:RegistrationComponent},
       { path: 'login', component:LoginComponent },
@@ -68,6 +75,7 @@ import { ProductFormComponent } from './components/admin/product-form/product-fo
       { path: 'check-out', component:CheckoutComponent, canActivate: [AuthGuardService] },
       { path: 'order-success', component:OrderSuccessComponent, canActivate: [AuthGuardService] },
       { path: 'admin/products/new', component:ProductFormComponent, canActivate: [AuthGuardService, AdminAuthGuardService] },
+      { path: 'admin/products/:id', component:ProductFormComponent, canActivate: [AuthGuardService, AdminAuthGuardService] },
       { path: 'admin/products', component:AdminProductsComponent, canActivate: [AuthGuardService, AdminAuthGuardService] },
       { path: 'admin/orders', component:AdminOrdersComponent, canActivate: [AuthGuardService,AdminAuthGuardService ] }
     ])
@@ -78,7 +86,8 @@ import { ProductFormComponent } from './components/admin/product-form/product-fo
     AdminAuthGuardService, 
     UserService, 
     CategoryService,
-    ProductService],
+    ProductService,
+    ShoppingCartService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

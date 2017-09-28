@@ -12,12 +12,17 @@ export class AppComponent {
 
   constructor(private userService: UserService, private af:AFService, route:Router) {
    af.user$.subscribe(user => {
-     if(user){
-       userService.save(user);
+     if(!user)
+        return;
+    
+     userService.save(user);
+     
+     let returnUrl = localStorage.getItem('returnUrl');
+     if(!returnUrl)
+        return;
 
-       let returnUrl = localStorage.getItem('returnUrl');
-       route.navigateByUrl(returnUrl);
-     }
+     localStorage.removeItem('returnUrl');   
+     route.navigateByUrl(returnUrl);  
    });
     
   }

@@ -1,7 +1,9 @@
-import { Router } from '@angular/router';
+import { ShoppingCartComponent } from './../../shopping-cart/shopping-cart.component';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from './../../../services/product.service';
 import { CategoryService } from './../../../services/category.service';
 import { Component, OnInit } from '@angular/core';
+import 'rxjs/add/operator/take';
 
 @Component({
   selector: 'app-product-form',
@@ -11,17 +13,38 @@ import { Component, OnInit } from '@angular/core';
 export class ProductFormComponent implements OnInit {
 
   categories$;
+  product = {};
+  id;
 
   constructor(private categoryService:CategoryService,
               private productService:ProductService,
-              private router:Router) {
+              private router:Router,
+              private route: ActivatedRoute) {
 
-      this.categories$ = categoryService.getCategories();
+      this.categories$ = categoryService.getAll();
+
+      this.id = this.route.snapshot.paramMap.get('id');
+
+      if(this.id) 
+        this.productService.get(this.id).take(1).subscribe(p=>this.product = p);
    }
 
    save(product){
-     this.productService.create(product);
+     if(this.id){
+       this.productService.update(this.id, product);
+     }else{
+        this.productService.create(product);
+     }
+
      this.router.navigate(['/admin/products']);
+   }
+
+   delete(){
+     if(confirm('Are you want to delete this Product?')){
+       this.productService.delete(this.id);
+       this.router.navigate(['/admin/products']);
+
+     }
    }
 
   ngOnInit() {
